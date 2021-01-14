@@ -8,7 +8,7 @@ const createWindow = () => {
   win = new BrowserWindow({
     width: 800,
     height: 600,
-    resizable: false,
+    resizable: true,
     webPreferences: {
       nodeIntegration: true,
     },
@@ -29,10 +29,7 @@ fs.readdir(__dirname, (err, result) => {
   }
 });
 
-// Getting Info from client
 ipcMain.on("submitData", (event, data) => {
-  console.log(data);
-
   let title = data.title;
   let url = data.url;
   let userId = data.userId;
@@ -72,6 +69,10 @@ ipcMain.on("submitData", (event, data) => {
     userId.includes("/") ||
     password.includes("/")
   ) {
+    title.replace("/", "");
+    url.replace("/", "");
+    userId.replace("/", "");
+    password.replace("/", "");
     title.split("/").pop();
     url.split("/").pop();
     userId.split("/").pop();
@@ -82,7 +83,7 @@ ipcMain.on("submitData", (event, data) => {
     path.join(__dirname, "files", `${title}.json`),
     `{"title": "${title}", "url": "${url}", "userId": "${userId}", "password": "${password}"}`,
     (err, result) => {
-      console.log(err);
+      if (err) throw err;
     }
   );
 });
@@ -134,8 +135,7 @@ ipcMain.on("getHistory", (event, data) => {
         url = decipher.update(toJson.url, "base64", "utf8");
         url += decipher.final("utf8");
 
-        if (userId === userId && password === password) {
-          console.log(title);
+        if (userId === toJson.userId && password === toJson.password) {
           finalResult.push({ title, url });
         } else {
           console.log("err");
@@ -143,7 +143,28 @@ ipcMain.on("getHistory", (event, data) => {
       });
       setTimeout(() => {
         win.webContents.send("receiveData", finalResult);
-      }, 1000);
+      }, 100);
     });
+  });
+});
+
+ipcMain.on("deleteHistory", (event, data) => {
+  let title = data.target;
+
+  const algorithm = "aes-256-cbc";
+  const key = "abcdefghijklmnopqrstuvwxyz123456";
+  const iv = "1234567890123456";
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  title = cipher.update(title, "utf8", "base64");
+  title += cipher.final("base64");
+
+  if (title.includes("/")) {
+    title.split("/").pop();
+  }
+
+  fs.unlink(path.join(__dirname, "files", title + ".json"), (err) => {
+    if (err) {
+      console.log(err);
+    }
   });
 });

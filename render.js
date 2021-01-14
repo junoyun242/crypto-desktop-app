@@ -14,7 +14,7 @@ const submitData = () => {
     password,
   });
 
-  alert("data has been saved");
+  alert("Data has been saved! \n\nIf error occurs, try changing the title");
 };
 
 const getHistory = () => {
@@ -28,15 +28,34 @@ const getHistory = () => {
 
   ipcRenderer.on("receiveData", (event, data) => {
     let result = "";
-    console.log(data);
     if (data[0] === undefined) {
-      result = "<p>Wrong Id or Password</p>";
+      result =
+        "<p class='text-gray-300 text-center p-2 m-2'>Wrong Id or Password</p>";
       document.querySelector("#ul").innerHTML = result;
     } else {
       data.map((elem, index) => {
-        result += `<div class="text-gray-300 text-center p-2 m-2"><p class='text-center pb-1'>${index}</p><li>title: ${elem.title}</li><li>url: <a href="${elem.url}">${elem.url}<a/></li><div/>`;
+        result += `<div class="text-gray-300 text-center p-2 m-2"><div class="border-2 border-gray-300 p-2 m-2"><p class='text-center pb-1'>${
+          index + 1
+        }</p><li>title: ${elem.title}</li><li>Content: ${
+          elem.url
+        }</li><button class="border-2 border-gray-300 rounded-sm bg-white text-black px-2 py-1 m-2"onclick="deleteHistory('${
+          elem.title
+        }')">Delete</button></div><div/>`;
         document.querySelector("#ul").innerHTML = result;
       });
     }
   });
+
+  setTimeout(() => {
+    window.scrollTo(0, 500);
+  }, 200);
+};
+
+const deleteHistory = (target) => {
+  ipcRenderer.send("deleteHistory", {
+    target,
+  });
+
+  alert("Deleted");
+  location.reload();
 };

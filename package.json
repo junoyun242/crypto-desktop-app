@@ -1,5 +1,5 @@
 {
-  "name": "url-desktop-app",
+  "name": "crypto-desktop-app",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -9,7 +9,7 @@
     "build:css": "postcss css/tailwind.css -o css/main.css",
     "watch:css": "postcss css/tailwind.css -o css/main.css"
   },
-  "author": "",
+  "author": "Apeiron",
   "license": "ISC",
   "dependencies": {
     "electron": "^11.2.0"
