@@ -39,29 +39,29 @@ ipcMain.on("submitData", (event, data) => {
   let key = "abcdefghijklmnopqrstuvwxyz123456";
   let iv = "1234567890123456";
   let cipher = crypto.createCipheriv(algorithm, key, iv);
-  title = cipher.update(title, "utf8", "base64");
-  title += cipher.final("base64");
+  title = cipher.update(title, "utf8", "hex");
+  title += cipher.final("hex");
 
   algorithm = "aes-256-cbc";
   key = "abcdefghijklmnopqrstuvwxyz123456";
   iv = "1234567890123456";
   cipher = crypto.createCipheriv(algorithm, key, iv);
-  url = cipher.update(url, "utf8", "base64");
-  url += cipher.final("base64");
+  url = cipher.update(url, "utf8", "hex");
+  url += cipher.final("hex");
 
   algorithm = "aes-256-cbc";
   key = "abcdefghijklmnopqrstuvwxyz123456";
   iv = "1234567890123456";
   cipher = crypto.createCipheriv(algorithm, key, iv);
-  userId = cipher.update(userId, "utf8", "base64");
-  userId += cipher.final("base64");
+  userId = cipher.update(userId, "utf8", "hex");
+  userId += cipher.final("hex");
 
   algorithm = "aes-256-cbc";
   key = "abcdefghijklmnopqrstuvwxyz123456";
   iv = "1234567890123456";
   cipher = crypto.createCipheriv(algorithm, key, iv);
-  password = cipher.update(password, "utf8", "base64");
-  password += cipher.final("base64");
+  password = cipher.update(password, "utf8", "hex");
+  password += cipher.final("hex");
 
   if (
     title.includes("/") ||
@@ -96,15 +96,15 @@ ipcMain.on("getHistory", (event, data) => {
   let key = "abcdefghijklmnopqrstuvwxyz123456";
   let iv = "1234567890123456";
   let cipher = crypto.createCipheriv(algorithm, key, iv);
-  userId = cipher.update(userId, "utf8", "base64");
-  userId += cipher.final("base64");
+  userId = cipher.update(userId, "utf8", "hex");
+  userId += cipher.final("hex");
 
   algorithm = "aes-256-cbc";
   key = "abcdefghijklmnopqrstuvwxyz123456";
   iv = "1234567890123456";
   cipher = crypto.createCipheriv(algorithm, key, iv);
-  password = cipher.update(password, "utf8", "base64");
-  password += cipher.final("base64");
+  password = cipher.update(password, "utf8", "hex");
+  password += cipher.final("hex");
 
   if (userId.includes("/") || password.includes("/")) {
     userId.split("/").pop();
@@ -125,14 +125,14 @@ ipcMain.on("getHistory", (event, data) => {
         key = "abcdefghijklmnopqrstuvwxyz123456";
         iv = "1234567890123456";
         decipher = crypto.createDecipheriv(algorithm, key, iv);
-        title = decipher.update(toJson.title, "base64", "utf8");
+        title = decipher.update(toJson.title, "hex", "utf8");
         title += decipher.final("utf8");
 
         algorithm = "aes-256-cbc";
         key = "abcdefghijklmnopqrstuvwxyz123456";
         iv = "1234567890123456";
         decipher = crypto.createDecipheriv(algorithm, key, iv);
-        url = decipher.update(toJson.url, "base64", "utf8");
+        url = decipher.update(toJson.url, "hex", "utf8");
         url += decipher.final("utf8");
 
         if (userId === toJson.userId && password === toJson.password) {
@@ -155,8 +155,8 @@ ipcMain.on("deleteHistory", (event, data) => {
   const key = "abcdefghijklmnopqrstuvwxyz123456";
   const iv = "1234567890123456";
   const cipher = crypto.createCipheriv(algorithm, key, iv);
-  title = cipher.update(title, "utf8", "base64");
-  title += cipher.final("base64");
+  title = cipher.update(title, "utf8", "hex");
+  title += cipher.final("hex");
 
   if (title.includes("/")) {
     title.split("/").pop();
