@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const os = require("os");
 
 let win = null;
 const createWindow = () => {
@@ -19,11 +20,11 @@ const createWindow = () => {
 
 app.whenReady().then(createWindow);
 
-fs.readdir(__dirname, (err, result) => {
+fs.readdir(os.homedir(), (err, result) => {
   if (result.includes("files")) {
     console.log("exist");
   } else {
-    fs.mkdir(path.join(__dirname, "files"), (err, result) => {
+    fs.mkdir(path.join(os.homedir(), "files"), (err, result) => {
       console.log("made files");
     });
   }
@@ -80,7 +81,7 @@ ipcMain.on("submitData", (event, data) => {
   }
 
   fs.writeFile(
-    path.join(__dirname, "files", `${title}.json`),
+    path.join(os.homedir(), "files", `${title}.json`),
     `{"title": "${title}", "url": "${url}", "userId": "${userId}", "password": "${password}"}`,
     (err, result) => {
       if (err) throw err;
@@ -116,31 +117,35 @@ ipcMain.on("getHistory", (event, data) => {
   let url;
   let toJson;
 
-  fs.readdir(path.join(__dirname, "files"), (err, result) => {
+  fs.readdir(path.join(os.homedir(), "files"), (err, result) => {
     result.forEach((data) => {
-      fs.readFile("./files/" + data, "utf8", (err, result) => {
-        toJson = JSON.parse(result);
+      fs.readFile(
+        path.join(os.homedir(), "/files", data),
+        "utf8",
+        (err, result) => {
+          toJson = JSON.parse(result);
 
-        algorithm = "aes-256-cbc";
-        key = "abcdefghijklmnopqrstuvwxyz123456";
-        iv = "1234567890123456";
-        decipher = crypto.createDecipheriv(algorithm, key, iv);
-        title = decipher.update(toJson.title, "hex", "utf8");
-        title += decipher.final("utf8");
+          algorithm = "aes-256-cbc";
+          key = "abcdefghijklmnopqrstuvwxyz123456";
+          iv = "1234567890123456";
+          decipher = crypto.createDecipheriv(algorithm, key, iv);
+          title = decipher.update(toJson.title, "hex", "utf8");
+          title += decipher.final("utf8");
 
-        algorithm = "aes-256-cbc";
-        key = "abcdefghijklmnopqrstuvwxyz123456";
-        iv = "1234567890123456";
-        decipher = crypto.createDecipheriv(algorithm, key, iv);
-        url = decipher.update(toJson.url, "hex", "utf8");
-        url += decipher.final("utf8");
+          algorithm = "aes-256-cbc";
+          key = "abcdefghijklmnopqrstuvwxyz123456";
+          iv = "1234567890123456";
+          decipher = crypto.createDecipheriv(algorithm, key, iv);
+          url = decipher.update(toJson.url, "hex", "utf8");
+          url += decipher.final("utf8");
 
-        if (userId === toJson.userId && password === toJson.password) {
-          finalResult.push({ title, url });
-        } else {
-          console.log("err");
+          if (userId === toJson.userId && password === toJson.password) {
+            finalResult.push({ title, url });
+          } else {
+            console.log("err");
+          }
         }
-      });
+      );
       setTimeout(() => {
         win.webContents.send("receiveData", finalResult);
       }, 100);
@@ -162,7 +167,7 @@ ipcMain.on("deleteHistory", (event, data) => {
     title.split("/").pop();
   }
 
-  fs.unlink(path.join(__dirname, "files", title + ".json"), (err) => {
+  fs.unlink(path.join(os.homedir(), "files", title + ".json"), (err) => {
     if (err) {
       console.log(err);
     }

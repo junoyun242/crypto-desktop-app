@@ -14,6 +14,11 @@ const submitData = () => {
     password,
   });
 
+  title = "";
+  url = "";
+  userId = "";
+  password = "";
+
   alert("Data has been saved! \n\nIf error occurs, try changing the title");
 };
 
@@ -30,7 +35,7 @@ const getHistory = () => {
     let result = "";
     if (data[0] === undefined) {
       result =
-        "<p class='text-gray-300 text-center p-2 m-2'>Wrong Id or Password</p>";
+        "<p class='text-yellow-400 text-center p-2 m-2'>Wrong Id or Password</p>";
       document.querySelector("#ul").innerHTML = result;
     } else {
       data.map((elem, index) => {
