@@ -14,12 +14,12 @@ const submitData = () => {
     password,
   });
 
+  alert("Data has been saved! \n\nIf error occurs, try changing the title");
+
   title = "";
   url = "";
   userId = "";
   password = "";
-
-  alert("Data has been saved! \n\nIf error occurs, try changing the title");
 };
 
 const getHistory = () => {
